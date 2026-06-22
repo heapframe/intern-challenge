@@ -1,24 +1,49 @@
-from openai import OpenAI
+import levels
 from config import Config
+from levels import Level
+import agent
 import json
+from openai import OpenAI
+import os
 
-with open("config.json", "r") as f:
-    config_json = json.load(f)
+def load_config():
+    if not os.path.exists("config.json"):
+        print("Error: config.json not found.")
+        return None
+    with open("config.json", "r") as f:
+        config_json = json.load(f)
+    return Config.model_validate(config_json)
 
-config = Config.model_validate(config_json)
+def main():
+    config = load_config()
+    if not config:
+        return
 
-client = OpenAI(
-    base_url=config.openai_conf.base_url,
-    api_key=config.openai_conf.api_key,
-)
+    client = OpenAI(
+        base_url=config.openai_conf.base_url,
+        api_key=config.openai_conf.api_key,
+    )
 
-response = client.chat.completions.create(
-    model=config.openai_conf.model,
-    messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": "Hello"}
-    ],
-    temperature=0.7,
-)
+    level_files = ["level1.json", "level2.json"]
 
-print(response.choices[0].message.content)
+    for level_file in level_files:
+        if not os.path.exists(level_file):
+            print(f"Skipping {level_file}: File not found.")
+            continue
+            
+        with open(level_file, "r") as f:
+            levels_json = json.load(f)
+        level = Level.model_validate(levels_json)
+
+        success = agent.solve(client, config, level)
+        if success:
+            print(f"Successfully completed {level.name}!")
+        else:
+            print(f"Failed to complete {level.name}.")
+        
+        print("-" * 30)
+
+    print("All levels processed. Simulation finished.")
+
+if __name__ == "__main__":
+    main()

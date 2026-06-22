@@ -1,0 +1,39 @@
+{
+  "name": "Level One: Door puzzle",
+  "system_prompt": "You are an agent in a 2D grid world. Your goal is to complete the level by interacting with objects.",
+  "resolution": [6,6],
+  "solution": "blue key",
+  "enabled_tools": ["observe", "move", "pickup", "use_item"],
+  "type": "freedom-to-move-and-interact",
+  "additional_data": [],
+  "objects": [
+    {
+      "type": "item,equippable",
+      "name": "key",
+      "position": [1,0],
+      "identifier": "red key",
+      "description": "This key belongs to certainty. It represents statements that remain constant across observation and never invert their meaning."
+    },
+    {
+      "type": "item,equippable",
+      "name": "key",
+      "position": [3,0],
+      "identifier": "green key",
+      "description": "This key belongs to inversion. It represents statements that are always false when interpreted directly."
+    },
+    {
+      "type": "item,equippable",
+      "name": "key",
+      "position": [5,0],
+      "identifier": "blue key",
+      "description": "This key belongs to ambiguity. Its meaning changes depending on observation context and cannot be consistently pinned to true or false."
+    },
+    {
+      "type": "partoflevel,door,locked,needskey",
+      "name": "door",
+      "position": [3,5],
+      "identifier": "door",
+      "description": "Three guardians block the path. One speaks only truth, one only lies, one changes meaning each time you look. You must pass through the door by choosing the name that belongs to the one who cannot be trusted in any consistent way."
+    }
+  ]
+}
