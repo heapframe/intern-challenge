@@ -1,7 +1,0 @@
-{
-  "openai_conf": {
-    "base_url": "http://localhost:11434/v1",
-    "api_key": "none",
-    "model": "qwen3:8b"
-  }
-}
