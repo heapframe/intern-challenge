@@ -1,5 +1,6 @@
 .venv
 __pycache__/
-ideas.mdconfig.json
+ideas.md
+task.md
 config.json
 .idea

@@ -26,10 +26,10 @@ The core loop is implemented from scratch in ~130 lines of Python — no agent f
 
 ```
 ┌─────────────┐    JSON state     ┌─────────────┐    tool call (JSON)    ┌──────────────┐
-│  World State │ ─────────────── ▶ │     LLM     │ ─────────────────────▶ │ Tool Harness │
-│  (dict)     │                   │             │                         │  (agent.py)  │
-│             │ ◀─────────────── │             │ ◀───────────────────── │              │
-└─────────────┘   state update    └─────────────┘    result / error       └──────────────┘
+│ World State │ ─────────────── ▶ │     LLM     │ ─────────────────────▶ │ Tool Harness │
+│  (dict)     │                   │             │                        │  (agent.py)  │
+│             │ ◀──────────────── │             │ ◀───────────────────── │              │
+└─────────────┘   state update    └─────────────┘    result / error      └──────────────┘
          ▲                                                                        │
          └────────────────────────── world mutation ──────────────────────────────┘
 ```
@@ -65,6 +65,7 @@ The core loop is implemented from scratch in ~130 lines of Python — no agent f
 ├── main.py          # Entry point — loads config, iterates levels, calls agent.solve()
 ├── agent.py         # Agent harness: tool registry, dispatcher, and the core agent loop
 ├── levels.py        # Pydantic models (Level, Object) and world initialisation
+├── tests.py         # 43 unit tests covering every tool, error path, and the JSON extractor
 ├── level1.json      # Level 1 definition (grid world, door puzzle)
 ├── level2.json      # Level 2 definition (manufacturing line, car repair)
 └── requirements.txt
@@ -94,6 +95,14 @@ The `base_url` field accepts any OpenAI-compatible endpoint — swapping to a lo
 
 ```bash
 python main.py
+```
+
+### Running the Tests
+
+The test suite covers the tool dispatcher, world models, and JSON extraction — no API key or LLM needed.
+
+```bash
+python -m pytest tests.py -v
 ```
 
 ## Full Output
