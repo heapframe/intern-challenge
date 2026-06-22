@@ -1,5 +1,7 @@
 # LLM Agent in a Virtual World
 
+[![Build Status](https://github.com/heapframe/intern-challenge/actions/workflows/python-app.yml/badge.svg)](https://github.com/heapframe/intern-challenge/actions/workflows/python-app.yml)
+
 A framework for grounding large language models in structured virtual environments. The agent perceives its surroundings as semantic state, reasons over it, and issues tool calls — all without a framework like LangChain. Two levels demonstrate the approach: a logic puzzle requiring semantic reasoning and an industrial simulation requiring multi-step procedural planning.
 
 ## Demo
