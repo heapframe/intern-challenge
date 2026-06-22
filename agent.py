@@ -277,7 +277,7 @@ def tool_call(state, tool_name, args, level):
     elif tool_name == "incinerate":
         part = state["equipped"]
         if part is None:
-            raise ValueError(f"You have not equipped anything anything")
+            raise ValueError(f"You have not equipped anything")
         state["destroyed"].append(part)
 
         state["equipped"] = None
@@ -378,7 +378,7 @@ def solve(client: OpenAI, config: Config, level: Level):
                     chunk = response[start:i + 1]
                     try:
                         response_json = json.loads(chunk)
-                    except json.JSONDecodeError:
+                    except json.JSONDecodeError as e:
                         messages.append({"role": "user", "content": f"Invalid JSON. Please return ONLY JSON. Error: {e}"})
                         continue
 
