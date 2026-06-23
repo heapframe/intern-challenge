@@ -9,7 +9,18 @@ import os
 def load_config():
     if not os.path.exists("config.json"):
         print("Error: config.json not found.")
-        return None
+        if input("Would you like to make one? (Y/n)").lower().strip() != "n":
+            new_config = {
+                "openai_conf": {
+                    "base_url": input("Enter base url of your openai conf: ").strip(),
+                    "api_key": input("Enter the api key: ").strip(),
+                    "model": input("Enter the model to be used: ").strip()
+                }
+            }
+            with open("config.json", "w") as f:
+                json.dump(new_config, f, indent=2)
+        else:
+            return None
     with open("config.json", "r") as f:
         config_json = json.load(f)
     return Config.model_validate(config_json)
