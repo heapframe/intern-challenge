@@ -3,5 +3,6 @@ __pycache__/
 ideas.md
 task.md
 config.json
+alt_config.json
 .idea
 .pytest_cache

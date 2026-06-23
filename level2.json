@@ -10,7 +10,8 @@
                        [0,  ["front bumper", "windscreen"]],
                        [90, ["front left tyre", "front left door", "rear left door", "rear left tyre"]],
                        [180, ["rear bumper", "rear glass"]],
-                       [270, ["rear right tyre", "rear right door", "front right door", "front right tyre"]]
+                       [270, ["rear right tyre", "rear right door", "front right door", "front right tyre"]],
+                       ["spares", ["front bumper", "windscreen", "rear glass", "front left tyre"]]
                      ],
   "objects": [
   ]

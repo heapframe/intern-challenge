@@ -313,11 +313,11 @@ def solve(client: OpenAI, config: Config, level: Level):
         state = {
             "fixed": False,
             "equipped": None,
-            "orientation": 0,
-            "visible": ["front bumper", "windscreen"], #TODO: make it populate from level data
-            "limited_visible": ["front bumper", "windscreen"],
+            "orientation": level.additional_data[0][0],
+            "visible": level.additional_data[0][1],
+            "limited_visible": level.additional_data[0][1],
             "destroyed": [],
-            "spares": ["front bumper", "windscreen", "rear glass", "front left tyre"]
+            "spares": level.additional_data[4][1]
         }
 
     enabled = []
