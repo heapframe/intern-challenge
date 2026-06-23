@@ -20,6 +20,7 @@ def load_config():
             with open("config.json", "w") as f:
                 json.dump(new_config, f, indent=2)
         else:
+            print("Exiting...")
             return None
     with open("config.json", "r") as f:
         config_json = json.load(f)

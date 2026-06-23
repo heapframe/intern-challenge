@@ -4,3 +4,4 @@ ideas.md
 task.md
 config.json
 .idea
+.pytest_cache

@@ -48,6 +48,38 @@ The core loop is implemented from scratch in ~130 lines of Python — no agent f
 
 **Post-completion reasoning elicitation.** On success, the system prompt is cleared of tool scaffolding and the agent is asked to explain its decision process in plain text. The full action history remains in context, so the explanation is grounded in what actually happened.
 
+### What Worked and What Didn't
+
+**What worked well:**
+
+The tool-scoping approach proved effective. By filtering the global tool list down to only the tools declared in `enabled_tools` before building the system prompt, the agent never attempts actions that don't exist in its current context. Level 1 agents never try to `scan_area`; Level 2 agents never try to `pickup`. This scoping comes essentially for free — no special-casing in the dispatcher.
+
+The brace-depth JSON extractor was also more robust in practice than a regex approach. LLMs frequently prepend natural-language reasoning to their responses, and the character-by-character depth counter reliably extracts the action JSON regardless of what surrounds it.
+
+**What I changed during development:**
+
+Level 2 was originally going to be another 2D grid puzzle. After researching the company, I pivoted to a vehicle manufacturing line — a closer analogue to the kind of procedural, multi-step physical reasoning relevant to real industrial agent deployments. This turned out to be a better test: the agent needs to build a spatial model of the car by rotating and scanning, rather than being handed everything at once.
+
+**What I'd improve with more time:**
+
+The initial visible state for the manufacturing level is hardcoded (front bumper, windscreen at orientation 0) rather than derived from `additional_data` in the JSON — there's a `TODO` comment at that line. The JSON extractor also has an edge case where a `JSONDecodeError` continues the wrong loop. Neither affected the demo, but both would be addressed before production use.
+
+### Why is it structured the way it is?
+
+Levels are defined entirely in JSON (`level1.json`, `level2.json`) — including the name, system prompt, grid resolution, object definitions, tool allowlist, and any level-specific data. The motivation is separation of concerns: adding a new level or adjusting a puzzle requires only a JSON edit, with no Python changes.
+
+Externalising the level definition also creates a natural validation boundary. Pydantic models (`Level`, `Object` in `levels.py`) validate every loaded file against a strict schema with `extra="forbid"` — unknown keys raise an error immediately, and a cross-field validator checks that every object's position falls within the declared grid resolution before the simulation starts.
+
+Each level carries its own `system_prompt` field, so the agent's persona, goal, and framing are fully configurable without touching the harness. The same `solve()` loop runs both levels unchanged; only the prompt and tool set differ.
+
+### What does the agent need to know and how do I tell it?
+
+The agent receives a minimal `visible_state` JSON object on every step — just enough to orient it without exposing the full internal state. For the grid world this is `player_pos`, `equipped`, and `door_open`. For the manufacturing line it is only `equipped` and `orientation`. Everything else — what objects are present, what parts are available, what faults exist — must be discovered through tool calls.
+
+This deliberate information asymmetry serves two purposes. First, it keeps token usage low per step, which matters both for cost and for models like `qwen3` that can over-reason when given too much context at once. Second, it makes the tool calls do real epistemic work: the agent has to `scan_area` to learn what it can see, then `inspect` individual parts to find faults, rather than being handed a complete world description upfront.
+
+The system prompt for each level is injected directly from the JSON, followed by the filtered tool list and a JSON response format instruction. On success, the system prompt is swapped in-place to a reflection prompt while keeping the full action history in context, so the agent's post-completion explanation is grounded in what it actually did.
+
 ## Action Space
 
 | Tool | Description |
